@@ -107,25 +107,25 @@ describe('Bracket', () => {
     });
   });
 
-  describe('getAllItems', () => {
-    it('returns an Array of all Items for a Bracket', (done) => {
-      Brackets.getAllItems(1)
-        .then((items) => {
-          expect(items).to.have.lengthOf(3);
-          expect(items[0]).to.be.an('object');
-          expect(items[0]).to.have.property('name');
-          expect(items[0]).to.have.property('bracketId');
-          expect(items[0]).to.have.property('ownerFbId');
-          expect(items[0]).to.have.property('completerFbId');
+  describe('getAllMembers', () => {
+    it('returns an Array of all Members for a Bracket', (done) => {
+      Brackets.getAllMembers(1)
+        .then((members) => {
+          expect(members).to.have.lengthOf(3);
+          expect(members[0]).to.be.an('object');
+          expect(members[0]).to.have.property('name');
+          expect(members[0]).to.have.property('bracketId');
+          expect(members[0]).to.have.property('ownerFbId');
+          expect(members[0]).to.have.property('completerFbId');
           done();
         });
     });
 
-    it('returns an empty Array when there are no Items/Bracket', (done) => {
-      Brackets.getAllItems(6)
-        .then((items) => {
-          expect(items).to.have.lengthOf(0);
-          expect(items).to.be.an('array');
+    it('returns an empty Array when there are no Members/Bracket', (done) => {
+      Brackets.getAllMembers(6)
+        .then((members) => {
+          expect(members).to.have.lengthOf(0);
+          expect(members).to.be.an('array');
           done();
         });
     });

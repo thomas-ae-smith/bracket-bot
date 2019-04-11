@@ -13,7 +13,7 @@ import Knex  from '../db/knex';
 import {camelCaseKeys} from './util';
 
 const Brackets = () => Knex('brackets');
-const BracketsItems = () => Knex('brackets_items');
+const BracketsMembers = () => Knex('brackets_members');
 const Users = () => Knex('users');
 const UsersBrackets = () => Knex('users_brackets');
 
@@ -37,15 +37,15 @@ const getAll = () =>
     .then((brackets) => brackets.map(camelCaseKeys));
 
 /**
- * getAllItems - Gets all BracketsItems for the Bracket with the given ID.
+ * getAllMembers - Gets all BracketsMembers for the Bracket with the given ID.
  * @param   {Number} bracketId - The ID of the Bracket to get items for.
- * @returns {Array} bracketsItems - Array of all BracketsItems
+ * @returns {Array} bracketsMembers - Array of all BracketsMembers
  */
-const getAllItems = (bracketId) =>
-  BracketsItems()
+const getAllMembers = (bracketId) =>
+  BracketsMembers()
     .where('bracket_id', parseInt(bracketId, 10))
     .select()
-    .then((bracketsItems) => bracketsItems.map(camelCaseKeys));
+    .then((bracketsMembers) => bracketsMembers.map(camelCaseKeys));
 
 /**
  * getAllUsers - Gets all Users of the Bracket with the given ID.
@@ -208,7 +208,7 @@ export default {
   create,
   get,
   getAll,
-  getAllItems,
+  getAllMembers,
   getAllUsers,
   getForUser,
   getOwnedForUser,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {getBracketsItems, getUsersBrackets, LISTS, USERS} =
+const {getBracketsMembers, getUsersBrackets, LISTS, USERS} =
   require('../sample-seed-helpers');
 
 /**
@@ -19,7 +19,7 @@ const {getBracketsItems, getUsersBrackets, LISTS, USERS} =
 exports.seed = (knex, Promise) =>
   Promise.all([
     knex('users_brackets').del(),
-    knex('brackets_items').del(),
+    knex('brackets_members').del(),
     knex('brackets').del(),
     knex('users').del(),
   ]).then(() =>
@@ -31,7 +31,7 @@ exports.seed = (knex, Promise) =>
 
       return Promise.all([
         knex('users_brackets').insert(getUsersBrackets(bracketIds)),
-        knex('brackets_items').insert(getBracketsItems(bracketIds)),
+        knex('brackets_members').insert(getBracketsMembers(bracketIds)),
       ]);
     })
   );

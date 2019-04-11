@@ -7,7 +7,7 @@
 
 // ===== DB ====================================================================
 import Brackets from '../models/brackets';
-import BracketsItems from '../models/brackets-items';
+import BracketsMembers from '../models/brackets-members';
 
 // Update the title of the given Bracket and
 // notifies all subscribed users of the change.
@@ -19,36 +19,36 @@ const updateTitle = ({request: {bracketId, title}, sendStatus, socket}) => {
     });
 };
 
-// Creates a new BracketItem and notifies
+// Creates a new BracketMember and notifies
 // all subscribed users of the change.
-const addItem = ({
+const addMember = ({
   request: {senderId, bracketId, name},
   sendStatus,
   allInRoom,
 }) => {
-  BracketsItems.create(name, bracketId, senderId)
-    .then((bracketItem) => {
-      allInRoom(bracketId).emit('item:add', bracketItem);
+  BracketsMembers.create(name, bracketId, senderId)
+    .then((bracketMember) => {
+      allInRoom(bracketId).emit('member:add', bracketMember);
       sendStatus('ok');
     });
 };
 
-// Updates an existing BracketItem and notifies
+// Updates an existing BracketMember and notifies
 // all subscribed users of the change.
-const updateItem = ({request, sendStatus, allInRoom}) => {
+const updateMember = ({request, sendStatus, allInRoom}) => {
   const {bracketId, id, name, completerFbId} = request;
   console.log('request', {bracketId, id, name, completerFbId});
 
-  BracketsItems.update({id, name, completerFbId})
+  BracketsMembers.update({id, name, completerFbId})
     .then(({id, name, completerFbId}) => {
       allInRoom(bracketId)
-        .emit('item:update', {id, name, completerFbId});
+        .emit('member:update', {id, name, completerFbId});
       sendStatus('ok');
     });
 };
 
 export default {
-  addItem,
-  updateItem,
+  addMember,
+  updateMember,
   updateTitle,
 };

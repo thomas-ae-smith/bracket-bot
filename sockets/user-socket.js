@@ -65,7 +65,7 @@ const join = ({
 }) => {
   Promise.all([
     Brackets.get(bracketId),
-    Brackets.getAllItems(bracketId),
+    Brackets.getAllMembers(bracketId),
     Brackets.getOwner(bracketId),
     getUser(senderId),
   ]).then(([bracket, items, bracketOwner, user]) => {

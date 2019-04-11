@@ -12,7 +12,7 @@ exports.up = (knex, Promise) => {
       table.string('title').defaultTo('Custom Bracket').notNullable();
     }),
 
-    knex.schema.createTable('brackets_items', (table) => {
+    knex.schema.createTable('brackets_members', (table) => {
       table.increments();
       table.string('name').notNullable();
       table.integer('bracket_id').references('brackets.id').notNullable();
@@ -37,7 +37,7 @@ exports.up = (knex, Promise) => {
 exports.down = (knex, Promise) => {
   return Promise.all([
     knex.schema.dropTable('users_brackets'),
-    knex.schema.dropTable('brackets_items'),
+    knex.schema.dropTable('brackets_members'),
     knex.schema.dropTable('users'),
     knex.schema.dropTable('brackets'),
   ]);

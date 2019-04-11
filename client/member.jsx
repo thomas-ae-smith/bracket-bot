@@ -14,11 +14,11 @@ import {CellBody, CellFooter, CellHeader, Checkbox, FormCell} from 'react-weui';
 /*
  * A single bracket item, including controls
  */
-const Item = ({
+const Member = ({
   id,
   name,
   viewerId,
-  pushUpdatedItem,
+  pushUpdatedMember,
   completerFbId,
   ownerFbId,
   users,
@@ -42,7 +42,7 @@ const Item = ({
         <Checkbox
           name={`item-${id}`}
           checked={!!completerFbId}
-          onChange={() => pushUpdatedItem(id, name, toComplete)}
+          onChange={() => pushUpdatedMember(id, name, toComplete)}
         />
       </CellHeader>
 
@@ -53,11 +53,11 @@ const Item = ({
   );
 };
 
-Item.PropTypes = {
+Member.PropTypes = {
   id: React.PropTypes.number.isRequired,
   name: React.PropTypes.string.isRequired,
   viewerId: React.PropTypes.string.isRequired,
-  pushUpdatedItem: React.PropTypes.func.isRequired,
+  pushUpdatedMember: React.PropTypes.func.isRequired,
   ownerFbId: React.PropTypes.string.isRequired,
   completerFbId: React.PropTypes.string,
   users: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -66,4 +66,4 @@ Item.PropTypes = {
   })).isRequired,
 };
 
-export default Item;
+export default Member;

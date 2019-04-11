@@ -28,20 +28,20 @@ const lockScroll = (startTime) => {
   }
 };
 
-// The NewItem Input Field Component
-const NewItem = ({
-  addNewItem,
+// The NewMember Input Field Component
+const NewMember = ({
+  addNewMember,
   disabled,
-  newItemText,
+  newMemberText,
   resetting,
-  setNewItemText,
+  setNewMemberText,
 }) => {
   const onSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!disabled && newItemText.length > 0) {
-      addNewItem();
+    if (!disabled && newMemberText.length > 0) {
+      addNewMember();
       lockScroll(Date.now());
     }
   };
@@ -62,10 +62,10 @@ const NewItem = ({
             disabled={disabled}
             id='new-item-text'
             onBlur={onSubmit}
-            onChange={(event) => setNewItemText(event.target.value)}
+            onChange={(event) => setNewMemberText(event.target.value)}
             placeholder='Add an item to the bracket'
             type='text'
-            value={newItemText}
+            value={newMemberText}
           />
         </form>
       </CellBody>
@@ -73,11 +73,11 @@ const NewItem = ({
   );
 };
 
-NewItem.proptypes = {
-  addNewItem: React.PropTypes.func.isRequired,
+NewMember.proptypes = {
+  addNewMember: React.PropTypes.func.isRequired,
   disabled: React.PropTypes.bool.isRequired,
-  newItemText: React.PropTypes.string,
-  setNewItemText: React.PropTypes.func.isRequired,
+  newMemberText: React.PropTypes.string,
+  setNewMemberText: React.PropTypes.func.isRequired,
 };
 
-export default NewItem;
+export default NewMember;

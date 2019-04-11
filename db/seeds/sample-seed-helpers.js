@@ -37,12 +37,12 @@ const getUsersBrackets = (bracketIds = []) => [
 ];
 
 /**
- * getBracketsItems - Gets placeholder BracketsItems data for seed files.
+ * getBracketsMembers - Gets placeholder BracketsMembers data for seed files.
  * @param   {Array} bracketIds - Array of bracket IDs.
- * @returns {Array} bracketsItems - Array of placeholder bracketsItems
+ * @returns {Array} bracketsMembers - Array of placeholder bracketsMembers
  *                                  data for seeds.
  */
-const getBracketsItems = (bracketIds = []) => [
+const getBracketsMembers = (bracketIds = []) => [
   {name: 'Eggs', bracket_id: bracketIds[0], owner_fb_id: 1, completer_fb_id: 2},
   {name: 'Milk', bracket_id: bracketIds[0], owner_fb_id: 3, completer_fb_id: 3},
   {name: 'Bread', bracket_id: bracketIds[0], owner_fb_id: 1},
@@ -52,4 +52,4 @@ const getBracketsItems = (bracketIds = []) => [
   {name: 'Invites', bracket_id: bracketIds[2], owner_fb_id: 3},
 ];
 
-module.exports = {getBracketsItems, getUsersBrackets, LISTS, USERS};
+module.exports = {getBracketsMembers, getUsersBrackets, LISTS, USERS};

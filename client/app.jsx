@@ -13,10 +13,10 @@ import {Panel, Form} from 'react-weui';
 
 // ===== COMPONENTS ============================================================
 import Invite from './invite.jsx';
-import Item from './item.jsx';
+import Member from './member.jsx';
 import BracketNotFound from './bracket_not_found.jsx';
 import LoadingScreen from './loading_screen.jsx';
-import NewItem from './new_item.jsx';
+import NewMember from './new_member.jsx';
 import Title from './title.jsx';
 import Updating from './updating.jsx';
 import Viewers from './viewers.jsx';
@@ -31,12 +31,12 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.addItem = this.addItem.bind(this);
-    this.addNewItem = this.addNewItem.bind(this);
-    this.pushUpdatedItem = this.pushUpdatedItem.bind(this);
+    this.addMember = this.addMember.bind(this);
+    this.addNewMember = this.addNewMember.bind(this);
+    this.pushUpdatedMember = this.pushUpdatedMember.bind(this);
     this.setDocumentTitle = this.setDocumentTitle.bind(this);
-    this.setItem = this.setItem.bind(this);
-    this.setNewItemText = this.setNewItemText.bind(this);
+    this.setMember = this.setMember.bind(this);
+    this.setNewMemberText = this.setNewMemberText.bind(this);
     this.setOwnerId = this.setOwnerId.bind(this);
     this.setTitleText = this.setTitleText.bind(this);
     this.userJoin = this.userJoin.bind(this);
@@ -44,7 +44,7 @@ export default class App extends React.Component {
 
     this.state = {
       items: [],
-      newItemText: '',
+      newMemberText: '',
       ownerId: null,
       resetting: false,
       title: this.props.title,
@@ -162,17 +162,17 @@ export default class App extends React.Component {
     this.setState({users});
   }
 
-  /* ----------  Items  ---------- */
+  /* ----------  Members  ---------- */
 
-  addItem(item) {
+  addMember(item) {
     this.setState({items: [...this.state.items, item]});
   }
 
-  pushUpdatedItem(itemId, name, completerFbId) {
+  pushUpdatedMember(itemId, name, completerFbId) {
     this.pushToRemote('item:update', {id: itemId, name, completerFbId});
   }
 
-  setItem({id, name, completerFbId}) {
+  setMember({id, name, completerFbId}) {
     const items = this.state.items.map((item) =>
       (item.id === id)
         ? Object.assign({}, item, {id: id, name, completerFbId})
@@ -182,26 +182,26 @@ export default class App extends React.Component {
     this.setState({items});
   }
 
-  /* ----------  New Item Field  ---------- */
+  /* ----------  New Member Field  ---------- */
 
-  setNewItemText(newText) {
+  setNewMemberText(newText) {
     console.log('Set new item text:', newText);
-    this.setState({newItemText: newText});
+    this.setState({newMemberText: newText});
   }
 
   // Turn new item text into an actual bracket item
-  addNewItem() {
-    const {newItemText: name} = this.state;
+  addNewMember() {
+    const {newMemberText: name} = this.state;
 
-    this.resetNewItem();
+    this.resetNewMember();
     this.pushToRemote('item:add', {name});
   }
 
-  resetNewItem() {
+  resetNewMember() {
     this.setState({resetting: true});
 
     setTimeout(() => {
-      this.setState({newItemText: '', resetting: false});
+      this.setState({newMemberText: '', resetting: false});
     }, 600);
   }
 
@@ -221,8 +221,8 @@ export default class App extends React.Component {
       this.setState({users, items, ownerId, title});
     });
 
-    socket.on('item:add', this.addItem);
-    socket.on('item:update', this.setItem);
+    socket.on('item:add', this.addMember);
+    socket.on('item:update', this.setMember);
     socket.on('bracket:setOwnerId', this.setOwnerId);
     socket.on('title:update', this.setDocumentTitle);
     socket.on('user:join', this.userJoin);
@@ -261,7 +261,7 @@ export default class App extends React.Component {
       users,
       title,
       resetting,
-      newItemText,
+      newMemberText,
       updating,
       socketStatus,
     } = this.state;
@@ -275,12 +275,12 @@ export default class App extends React.Component {
       const {apiUri, bracketId, viewerId, threadType} = this.props;
       const itemBracket = items.filter(Boolean).map((item) => {
         return (
-          <Item
+          <Member
             {...item}
             key={item.id}
             users={users}
             viewerId={viewerId}
-            pushUpdatedItem={this.pushUpdatedItem}
+            pushUpdatedMember={this.pushUpdatedMember}
           />
         );
       });
@@ -344,12 +344,12 @@ export default class App extends React.Component {
                 </ReactCSSTransitionGroup>
               </Form>
 
-              <NewItem
-                newItemText={newItemText}
+              <NewMember
+                newMemberText={newMemberText}
                 disabled={updating}
                 resetting={resetting}
-                addNewItem={this.addNewItem}
-                setNewItemText={this.setNewItemText}
+                addNewMember={this.addNewMember}
+                setNewMemberText={this.setNewMemberText}
               />
             </section>
           </Panel>
