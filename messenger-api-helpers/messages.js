@@ -16,35 +16,35 @@
  */
 
 /**
- * Button for opening a specific list in a webview
+ * Button for opening a specific bracket in a webview
  *
- * @param {string} listUrl - URL for a specific list.
+ * @param {string} bracketUrl - URL for a specific bracket.
  * @param {string} buttonText - Text for the action button.
  * @returns {object} -
- *   Message to create a button pointing to the list in a webview.
+ *   Message to create a button pointing to the bracket in a webview.
  */
-const openExistingListButton = (listUrl, buttonText = 'Edit List') => {
+const openExistingBracketButton = (bracketUrl, buttonText = 'Edit Bracket') => {
   return {
     type: 'web_url',
     title: buttonText,
-    url: listUrl,
+    url: bracketUrl,
     messenger_extensions: true,
     webview_height_ratio: 'tall',
   };
 };
 
 /**
- * Button for opening a new list in a webview
+ * Button for opening a new bracket in a webview
  *
  * @param {string} apiUri - Hostname of the server.
  * @param {string=} buttonTitle - Button title.
  * @returns {object} -
- *   Message to create a button pointing to the new list form.
+ *   Message to create a button pointing to the new bracket form.
  */
-const createListButton = (apiUri, buttonTitle = 'Create a List') => {
+const createBracketButton = (apiUri, buttonTitle = 'Create a Bracket') => {
   return {
     type: 'web_url',
-    url: `${apiUri}/lists/new`,
+    url: `${apiUri}/brackets/new`,
     title: buttonTitle,
     webview_height_ratio: 'tall',
     messenger_extensions: true,
@@ -62,7 +62,7 @@ const createListButton = (apiUri, buttonTitle = 'Create a List') => {
  * Message that welcomes the user to the bot
  *
  * @param {string} apiUri - Hostname of the server.
- * @returns {object} - Message with welcome text and a button to start a new list.
+ * @returns {object} - Message with welcome text and a button to start a new bracket.
  */
 const welcomeMessage = (apiUri) => {
   return {
@@ -70,9 +70,9 @@ const welcomeMessage = (apiUri) => {
       type: 'template',
       payload: {
         template_type: 'button',
-        text: 'Ready to make a shared list with your friends? Everyone can add items, check things off, and stay in sync.',
+        text: 'Ready to make a shared bracket with your friends? Everyone can add items, check things off, and stay in sync.',
         buttons: [
-          createListButton(apiUri),
+          createBracketButton(apiUri),
         ],
       },
     },
@@ -80,20 +80,20 @@ const welcomeMessage = (apiUri) => {
 };
 
 /**
- * Message for when the user has no lists yet.
+ * Message for when the user has no brackets yet.
  *
  * @param {string} apiUri - Hostname of the server.
- * @returns {object} - Message with welcome text and a button to start a new list.
+ * @returns {object} - Message with welcome text and a button to start a new bracket.
  */
-const noListsMessage = (apiUri) => {
+const noBracketsMessage = (apiUri) => {
   return {
     attachment: {
       type: 'template',
       payload: {
         template_type: 'button',
-        text: 'It looks like you don’t have any lists yet. Would you like to create one?',
+        text: 'It looks like you don’t have any brackets yet. Would you like to create one?',
         buttons: [
-          createListButton(apiUri),
+          createBracketButton(apiUri),
         ],
       },
     },
@@ -101,33 +101,33 @@ const noListsMessage = (apiUri) => {
 };
 
 /**
- * Helper to construct a URI for the desired list
+ * Helper to construct a URI for the desired bracket
  *
  * @param {string} apiUri -
  *   Base URI for the server.
  *   Because this moduele may be called from the front end, we need to pass it explicitely.
- * @param {int} listId - The list ID.
- * @returns {string} - URI for the required list.
+ * @param {int} bracketId - The bracket ID.
+ * @returns {string} - URI for the required bracket.
  */
-const listUrl = (apiUri, listId) => `${apiUri}/lists/${listId}`;
+const bracketUrl = (apiUri, bracketId) => `${apiUri}/brackets/${bracketId}`;
 
 /**
- * A single list for the list template.
- * The name here is to distinguish lists and list templates.
+ * A single bracket for the bracket template.
+ * The name here is to distinguish brackets and bracket templates.
  *
- * @param {string} id            - List ID.
+ * @param {string} id            - Bracket ID.
  * @param {string} apiUri        - Url of endpoint.
  * @param {string} subscriberIds - Ids of each subscriber.
- * @param {string} title         - List title.
- * @returns {object} - Message with welcome text and a button to start a new list.
+ * @param {string} title         - Bracket title.
+ * @returns {object} - Message with welcome text and a button to start a new bracket.
  */
-const listElement = ({id, subscriberIds, title}, apiUri) => {
+const bracketElement = ({id, subscriberIds, title}, apiUri) => {
   return {
     title: title,
     subtitle: `Shared with ${[...subscriberIds].length} people`,
     default_action: {
       type: 'web_url',
-      url: listUrl(apiUri, id),
+      url: bracketUrl(apiUri, id),
       messenger_extensions: true,
       webview_height_ratio: 'tall',
     },
@@ -135,20 +135,20 @@ const listElement = ({id, subscriberIds, title}, apiUri) => {
 };
 
 /**
- * Messages for a list template of lists (meta!), offset by how many
+ * Messages for a bracket template of brackets (meta!), offset by how many
  * "read mores" the user has been through
  *
  * @param {string} apiUri - Hostname of the server.
  * @param {string} action - The postback action
- * @param {Array.<Object>} lists - All of the lists to be (eventually) displayed.
- * @param {int=} offset - How far through the list we are so far.
- * @returns {object} - Message with welcome text and a button to start a new list.
+ * @param {Array.<Object>} brackets - All of the brackets to be (eventually) displayed.
+ * @param {int=} offset - How far through the bracket we are so far.
+ * @returns {object} - Message with welcome text and a button to start a new bracket.
  */
-const paginatedListsMessage = (apiUri, action, lists, offset = 0) => {
-  const pageLists = lists.slice(offset, offset + 4);
+const paginatedBracketsMessage = (apiUri, action, brackets, offset = 0) => {
+  const pageBrackets = brackets.slice(offset, offset + 4);
 
   let buttons;
-  if (lists.length > (offset + 4)) {
+  if (brackets.length > (offset + 4)) {
     buttons = [
       {
         title: 'View More',
@@ -162,9 +162,9 @@ const paginatedListsMessage = (apiUri, action, lists, offset = 0) => {
     attachment: {
       type: 'template',
       payload: {
-        template_type: 'list',
+        template_type: 'bracket',
         top_element_style: 'compact',
-        elements: pageLists.map((list) => listElement(list, apiUri)),
+        elements: pageBrackets.map((bracket) => bracketElement(bracket, apiUri)),
         buttons,
       },
     },
@@ -172,24 +172,24 @@ const paginatedListsMessage = (apiUri, action, lists, offset = 0) => {
 };
 
 /**
- * Message that informs the user that their list has been created.
+ * Message that informs the user that their bracket has been created.
  */
-const listCreatedMessage = {
-  text: 'Your list was created.',
+const bracketCreatedMessage = {
+  text: 'Your bracket was created.',
 };
 
 /**
  * Message to configure the customized sharing menu in the webview
  *
  * @param {string} apiUri - Application basename
- * @param {string} listId - The ID for list to be shared
- * @param {string} title - Title of the list
+ * @param {string} bracketId - The ID for bracket to be shared
+ * @param {string} title - Title of the bracket
  * @param {string} buttonText - Text for the action button.
  * @returns {object} - Message to configure the customized sharing menu.
  */
-const shareListMessage = (apiUri, listId, title, buttonText) => {
-  const urlToList = listUrl(apiUri, listId);
-  console.log({urlToList});
+const shareBracketMessage = (apiUri, bracketId, title, buttonText) => {
+  const urlToBracket = bracketUrl(apiUri, bracketId);
+  console.log({urlToBracket});
   return {
     attachment: {
       type: 'template',
@@ -198,13 +198,13 @@ const shareListMessage = (apiUri, listId, title, buttonText) => {
         elements: [{
           title: title,
           image_url: `${apiUri}/media/button-cover.png`,
-          subtitle: 'A shared list from Tasks',
+          subtitle: 'A shared bracket from Tasks',
           default_action: {
             type: 'web_url',
-            url: urlToList,
+            url: urlToBracket,
             messenger_extensions: true,
           },
-          buttons: [openExistingListButton(urlToList, buttonText)],
+          buttons: [openExistingBracketButton(urlToBracket, buttonText)],
         }],
       },
     },
@@ -213,9 +213,9 @@ const shareListMessage = (apiUri, listId, title, buttonText) => {
 
 export default {
   welcomeMessage,
-  listCreatedMessage,
-  paginatedListsMessage,
-  createListButton,
-  noListsMessage,
-  shareListMessage,
+  bracketCreatedMessage,
+  paginatedBracketsMessage,
+  createBracketButton,
+  noBracketsMessage,
+  shareBracketMessage,
 };

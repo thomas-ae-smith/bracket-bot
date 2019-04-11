@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {getListsItems, getUsersLists, LISTS, USERS} =
+const {getBracketsItems, getUsersBrackets, LISTS, USERS} =
   require('../sample-seed-helpers');
 
 /**
@@ -14,24 +14,24 @@ const {getListsItems, getUsersLists, LISTS, USERS} =
  * @param {string} knex - Knex dependency
  * @param {Promise} Promise - Promise dependency
  * @returns {Promise} A single Promise that resolves when
- * user and list items have been inserted into the database.
+ * user and bracket items have been inserted into the database.
  */
 exports.seed = (knex, Promise) =>
   Promise.all([
-    knex('users_lists').del(),
-    knex('lists_items').del(),
-    knex('lists').del(),
+    knex('users_brackets').del(),
+    knex('brackets_items').del(),
+    knex('brackets').del(),
     knex('users').del(),
   ]).then(() =>
     Promise.all([
-      knex('lists').insert(LISTS, 'id'),
+      knex('brackets').insert(LISTS, 'id'),
       knex('users').insert(USERS, 'id'),
     ]).then((ids) => {
-      const listIds = ids[0];
+      const bracketIds = ids[0];
 
       return Promise.all([
-        knex('users_lists').insert(getUsersLists(listIds)),
-        knex('lists_items').insert(getListsItems(listIds)),
+        knex('users_brackets').insert(getUsersBrackets(bracketIds)),
+        knex('brackets_items').insert(getBracketsItems(bracketIds)),
       ]);
     })
   );

@@ -33,7 +33,7 @@ Express is a helpful framework built around Node.js for performing actions as a 
 *[Learn More](http://expressjs.com/)*
 
 #### Embedded JavaScript Templates (EJS)
-EJS is a very simple templating language. This helps us create HTML for the pages we show in a programmatic way, and inject values into a web page. Here we use it to decide whether to show the Preferences view, the Product view or the Error page, and to point the WebView at the correct list for the viewer.
+EJS is a very simple templating language. This helps us create HTML for the pages we show in a programmatic way, and inject values into a web page. Here we use it to decide whether to show the Preferences view, the Product view or the Error page, and to point the WebView at the correct bracket for the viewer.
 
 *[Learn More](http://ejs.co/)*
 
@@ -145,8 +145,8 @@ before you commit and push your changes.
 You may want to run this bot on a platform outside of Heroku or simply have it available locally for testing purposes.
 ```bash
 $ cd path/to/repo/chat-extensions
-$ createdb list_bot_dev
-$ createdb list_bot_test
+$ createdb bracket_bot_dev
+$ createdb bracket_bot_test
 $ yarn install
 $ knex migrate:latest
 $ knex seed:run

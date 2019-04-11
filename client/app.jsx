@@ -14,7 +14,7 @@ import {Panel, Form} from 'react-weui';
 // ===== COMPONENTS ============================================================
 import Invite from './invite.jsx';
 import Item from './item.jsx';
-import ListNotFound from './list_not_found.jsx';
+import BracketNotFound from './bracket_not_found.jsx';
 import LoadingScreen from './loading_screen.jsx';
 import NewItem from './new_item.jsx';
 import Title from './title.jsx';
@@ -55,7 +55,7 @@ export default class App extends React.Component {
 
   static propTypes = {
     apiUri: React.PropTypes.string.isRequired,
-    listId: React.PropTypes.number.isRequired,
+    bracketId: React.PropTypes.number.isRequired,
     socketAddress: React.PropTypes.string.isRequired,
     viewerId: React.PropTypes.number.isRequired,
     threadType: React.PropTypes.string.isRequired,
@@ -82,7 +82,7 @@ export default class App extends React.Component {
       `push:${channel}`,
       {
         senderId: this.props.viewerId,
-        listId: this.props.listId,
+        bracketId: this.props.bracketId,
         ...message,
       },
       (status) => {
@@ -104,7 +104,7 @@ export default class App extends React.Component {
 
   /* ----------  Update Document Attributes  ---------- */
 
-  setDocumentTitle(title = 'Shopping List') {
+  setDocumentTitle(title = 'Shopping Bracket') {
     console.log('Updating document title (above page):', title);
     document.title = title;
   }
@@ -113,7 +113,7 @@ export default class App extends React.Component {
      =           State & Event Handlers          =
      ============================================= */
 
-  /* ----------  List  ---------- */
+  /* ----------  Bracket  ---------- */
 
   // For the initial data fetch
   setOwnerId(ownerId) {
@@ -189,7 +189,7 @@ export default class App extends React.Component {
     this.setState({newItemText: newText});
   }
 
-  // Turn new item text into an actual list item
+  // Turn new item text into an actual bracket item
   addNewItem() {
     const {newItemText: name} = this.state;
 
@@ -223,7 +223,7 @@ export default class App extends React.Component {
 
     socket.on('item:add', this.addItem);
     socket.on('item:update', this.setItem);
-    socket.on('list:setOwnerId', this.setOwnerId);
+    socket.on('bracket:setOwnerId', this.setOwnerId);
     socket.on('title:update', this.setDocumentTitle);
     socket.on('user:join', this.userJoin);
     socket.on('users:setOnline', this.setOnlineUsers);
@@ -272,8 +272,8 @@ export default class App extends React.Component {
     if (users.length > 0) {
       /* ----------  Setup Sections (anything dynamic or repeated) ---------- */
 
-      const {apiUri, listId, viewerId, threadType} = this.props;
-      const itemList = items.filter(Boolean).map((item) => {
+      const {apiUri, bracketId, viewerId, threadType} = this.props;
+      const itemBracket = items.filter(Boolean).map((item) => {
         return (
           <Item
             {...item}
@@ -288,14 +288,14 @@ export default class App extends React.Component {
       let invite;
       const isOwner = viewerId === ownerId;
       if (isOwner || threadType !== 'USER_TO_PAGE') {
-        // only owners are able to share their lists and other
+        // only owners are able to share their brackets and other
         // participants are able to post back to groups.
         let sharingMode;
         let buttonText;
 
         if (threadType === 'USER_TO_PAGE') {
           sharingMode = 'broadcast';
-          buttonText = 'Invite your friends to this list';
+          buttonText = 'Invite your friends to this bracket';
         } else {
           sharingMode = 'current_thread';
           buttonText = 'Send to conversation';
@@ -305,7 +305,7 @@ export default class App extends React.Component {
           <Invite
             title={title}
             apiUri={apiUri}
-            listId={listId}
+            bracketId={bracketId}
             sharingMode={sharingMode}
             buttonText={buttonText}
           />
@@ -324,7 +324,7 @@ export default class App extends React.Component {
 
     /* ----------  Inner Structure  ---------- */
       page =
-        (<section id='list'>
+        (<section id='bracket'>
           <Viewers
             users={users}
             viewerId={viewerId}
@@ -340,7 +340,7 @@ export default class App extends React.Component {
                   transitionEnterTimeout={250}
                   transitionLeaveTimeout={250}
                 >
-                  {itemList}
+                  {itemBracket}
                 </ReactCSSTransitionGroup>
               </Form>
 
@@ -358,9 +358,9 @@ export default class App extends React.Component {
 
           {invite}
         </section>);
-    } else if (socketStatus === 'noList') {
-      // We were unable to find a matching list in our system.
-      page = <ListNotFound/>;
+    } else if (socketStatus === 'noBracket') {
+      // We were unable to find a matching bracket in our system.
+      page = <BracketNotFound/>;
     } else {
       // Show a loading screen until app is ready
       page = <LoadingScreen key='load' />;

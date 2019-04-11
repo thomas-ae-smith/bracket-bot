@@ -9,31 +9,34 @@
 import sendApi from './send';
 
 // ===== MODELS ================================================================
-import Lists from '../models/lists';
+import Brackets from '../models/brackets';
 
 /**
- * sendSharedLists - Gets & Sends a list of all lists a user owns.
+ * sendSharedBrackets - Gets & Sends a list of all brackets a user owns.
  * @param   {Number} senderId - FB ID to send to.
  * @param   {String} type - Postback Action type to respond to.
  * @returns {Undefined} - .
  */
-const sendOwnedLists = (senderId, type) => {
-  Lists.getOwnedForUser(senderId)
-    .then((lists) => {
-      sendApi.sendLists(senderId, type, lists, Number(type.substring(19)));
+const sendOwnedBrackets = (senderId, type) => {
+  Brackets.getOwnedForUser(senderId)
+    .then((brackets) => {
+      sendApi.sendBrackets(senderId, type,
+        brackets, Number(type.substring(19)));
     });
 };
 
 /**
- * sendSharedLists - Gets & Sends a list of all lists a user is associated with.
+ * sendSharedBrackets - Gets & Sends a list of all brackets a user is
+ * associated with.
  * @param   {Number} senderId - FB ID to send to.
  * @param   {String} type - Action type to send.
  * @returns {Undefined} - .
  */
-const sendSharedLists = (senderId, type) => {
-  Lists.getSharedToUser(senderId)
-    .then((lists) => {
-      sendApi.sendLists(senderId, type, lists, Number(type.substring(22)));
+const sendSharedBrackets = (senderId, type) => {
+  Brackets.getSharedToUser(senderId)
+    .then((brackets) => {
+      sendApi.sendBrackets(senderId, type,
+        brackets, Number(type.substring(22)));
     });
 };
 
@@ -55,10 +58,10 @@ const handleReceivePostback = (event) => {
   const senderId = event.sender.id;
 
   // Perform an action based on the type of payload received.
-  if (type.substring(0, 11) === 'owned_lists') {
-    sendOwnedLists(senderId, type);
-  } else if (type.substring(0, 16) === 'subscribed_lists') {
-    sendSharedLists(senderId, type);
+  if (type.substring(0, 11) === 'owned_brackets') {
+    sendOwnedBrackets(senderId, type);
+  } else if (type.substring(0, 16) === 'subscribed_brackets') {
+    sendSharedBrackets(senderId, type);
   } else if (type.substring(0, 11) === 'get_started') {
     sendApi.sendWelcomeMessage(senderId);
     return;

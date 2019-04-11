@@ -12,18 +12,18 @@
 import React from 'react';
 
 /*
- * Handle the case when a user requests a list that doesn't exist.
+ * Handle the case when a user requests a bracket that doesn't exist.
  *
  * Typically occurs when they follow an old link from before the app was spun up.
  */
-const ListNotFound = () => {
+const BracketNotFound = () => {
   return (
     <div id='oops'>
       <div id='oops-body'>
-        <h1>List Not Found</h1>
+        <h1>Bracket Not Found</h1>
 
         <div id='oops-subtitle'>
-          <p>Sorry, we couldn't find the list you were looking for.</p>
+          <p>Sorry, we couldn't find the bracket you were looking for.</p>
           <br />
           <p>We apologize for the inconvenience.</p>
         </div>
@@ -32,4 +32,4 @@ const ListNotFound = () => {
   );
 };
 
-export default ListNotFound;
+export default BracketNotFound;

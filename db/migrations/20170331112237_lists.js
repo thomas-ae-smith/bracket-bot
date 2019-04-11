@@ -7,15 +7,15 @@
 
 exports.up = (knex, Promise) => {
   return Promise.all([
-    knex.schema.createTable('lists', (table) => {
+    knex.schema.createTable('brackets', (table) => {
       table.increments();
-      table.string('title').defaultTo('Shopping List').notNullable();
+      table.string('title').defaultTo('Custom Bracket').notNullable();
     }),
 
-    knex.schema.createTable('lists_items', (table) => {
+    knex.schema.createTable('brackets_items', (table) => {
       table.increments();
       table.string('name').notNullable();
-      table.integer('list_id').references('lists.id').notNullable();
+      table.integer('bracket_id').references('brackets.id').notNullable();
       table.bigInteger('owner_fb_id').references('users.fb_id').notNullable();
       table.bigInteger('completer_fb_id').references('users.fb_id');
     }),
@@ -25,9 +25,9 @@ exports.up = (knex, Promise) => {
       table.bigInteger('fb_id').unique().notNullable();
     }),
 
-    knex.schema.createTable('users_lists', (table) => {
+    knex.schema.createTable('users_brackets', (table) => {
       table.increments();
-      table.integer('list_id').references('lists.id').notNullable();
+      table.integer('bracket_id').references('brackets.id').notNullable();
       table.bigInteger('user_fb_id').references('users.fb_id').notNullable();
       table.boolean('owner').defaultTo(false).notNullable();
     }),
@@ -36,9 +36,9 @@ exports.up = (knex, Promise) => {
 
 exports.down = (knex, Promise) => {
   return Promise.all([
-    knex.schema.dropTable('users_lists'),
-    knex.schema.dropTable('lists_items'),
+    knex.schema.dropTable('users_brackets'),
+    knex.schema.dropTable('brackets_items'),
     knex.schema.dropTable('users'),
-    knex.schema.dropTable('lists'),
+    knex.schema.dropTable('brackets'),
   ]);
 };

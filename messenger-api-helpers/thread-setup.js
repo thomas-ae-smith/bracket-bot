@@ -16,7 +16,7 @@ const {APP_URL} = process.env;
 /* ----------  Functions  ---------- */
 
 /**
- * Adds the server url to the Messenger App's whitelist.
+ * Adds the server url to the Messenger App's whitebracket.
  *
  * This is required to use Messenger Extensions which
  * this demo uses to get UserId's from a Messenger WebView.
@@ -46,20 +46,20 @@ const persistentMenu = () => {
           call_to_actions: [
             {
               type: 'web_url',
-              title: 'Create List',
-              url: `${APP_URL}/lists/new`,
+              title: 'Create Bracket',
+              url: `${APP_URL}/brackets/new`,
               webview_height_ratio: 'tall',
               messenger_extensions: true,
             },
             {
               type: 'postback',
-              title: 'My Lists',
-              payload: 'owned_lists',
+              title: 'My Brackets',
+              payload: 'owned_brackets',
             },
             {
               type: 'postback',
               title: 'Shared With Me',
-              payload: 'subscribed_lists',
+              payload: 'subscribed_brackets',
             },
           ],
         },

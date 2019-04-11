@@ -6,10 +6,10 @@
  */
 
 // ===== SOCKETS ===============================================================
-import ListSocket from './list-socket';
+import BracketSocket from './bracket-socket';
 import UserSocket from './user-socket';
 
-const socketUsers = new Map(); // {socketId: {userId, listId}}
+const socketUsers = new Map(); // {socketId: {userId, bracketId}}
 
 export default function attachSockets(io) {
   io.on('connection', (socket) => {
@@ -18,11 +18,11 @@ export default function attachSockets(io) {
 
     const channel = (channel, handler) => {
       socket.on(channel, (request, sendStatus) => {
-        const {userId, listId} = socketUsers.get(socket.id) || {};
+        const {userId, bracketId} = socketUsers.get(socket.id) || {};
 
         handler({
           allInRoom,
-          listId,
+          bracketId,
           request,
           sendStatus,
           socket,
@@ -36,9 +36,9 @@ export default function attachSockets(io) {
     console.log(`A user connected (socket ID ${socket.id})`);
 
     channel('disconnect', UserSocket.leave);
-    channel('push:item:add', ListSocket.addItem);
-    channel('push:item:update', ListSocket.updateItem);
-    channel('push:title:update', ListSocket.updateTitle);
+    channel('push:item:add', BracketSocket.addItem);
+    channel('push:item:update', BracketSocket.updateItem);
+    channel('push:title:update', BracketSocket.updateTitle);
     channel('push:user:join', UserSocket.join);
   });
 }

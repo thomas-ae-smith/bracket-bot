@@ -9,7 +9,7 @@
 module.exports = {
   test: {
     client: 'pg',
-    connection: 'postgres://localhost/list_bot_test',
+    connection: 'postgres://localhost/bracket_bot_test',
     migrations: {
       directory: `${__dirname}/db/migrations`,
     },
@@ -19,7 +19,7 @@ module.exports = {
   },
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/list_bot_dev',
+    connection: 'postgres://localhost/bracket_bot_dev',
     migrations: {
       directory: `${__dirname}/db/migrations`,
     },

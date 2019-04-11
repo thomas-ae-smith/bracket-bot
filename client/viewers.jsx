@@ -10,7 +10,7 @@ import React, {createElement} from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import {Footer, FooterText} from 'react-weui';
 
-// Viewers Component — Who has joined the list, and who is viewing it.
+// Viewers Component — Who has joined the bracket, and who is viewing it.
 const Viewers = ({viewerId, users}) => {
   if (users.length <= 1) { return null; }
 
@@ -39,7 +39,7 @@ const Viewers = ({viewerId, users}) => {
   return (
     <section id='viewers'>
       <ReactCSSTransitionGroup
-        className='viewers-list-cntnr'
+        className='viewers-bracket-cntnr'
         transitionName='viewer'
         transitionEnterTimeout={300}
         transitionLeaveTimeout={300}
@@ -49,7 +49,7 @@ const Viewers = ({viewerId, users}) => {
 
       <Footer id='viewer-count'>
         <FooterText>
-          {activeCount}/{viewers.length} people are viewing this list right now
+          {activeCount}/{viewers.length} people are viewing this bracket right now
         </FooterText>
       </Footer>
     </section>

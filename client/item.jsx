@@ -12,7 +12,7 @@ import React from 'react';
 import {CellBody, CellFooter, CellHeader, Checkbox, FormCell} from 'react-weui';
 
 /*
- * A single list item, including controls
+ * A single bracket item, including controls
  */
 const Item = ({
   id,

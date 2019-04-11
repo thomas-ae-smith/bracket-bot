@@ -9,13 +9,13 @@
 import React, {createElement} from 'react';
 import {Input} from 'react-weui';
 
-// List title field
+// Bracket title field
 const Title = ({text, setTitleText}) => {
   return (
     <div id='title'>
       <Input
         value={text}
-        placeholder='List Title'
+        placeholder='Bracket Title'
         onChange={(event) => setTitleText(event.target.value)}
       />
     </div>

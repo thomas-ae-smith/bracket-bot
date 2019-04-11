@@ -9,23 +9,23 @@
 import express from 'express';
 
 // ===== DB ====================================================================
-import Lists from '../models/lists';
+import Brackets from '../models/brackets';
 
 const router = express.Router();
 
-router.get('/:listId', (req, res) => {
+router.get('/:bracketId', (req, res) => {
   const {hostname} = req;
   const {DEMO, PORT, LOCAL} = process.env;
-  const reqId = req.params.listId;
+  const reqId = req.params.bracketId;
   const socketAddress = (DEMO && LOCAL) ?
     `http://${hostname}:${PORT}` : `wss://${hostname}`;
 
   if (reqId === 'new') {
-    Lists.create().then(({id}) => {
-      res.render('./index', {listId: id, socketAddress, demo: DEMO});
+    Brackets.create().then(({id}) => {
+      res.render('./index', {bracketId: id, socketAddress, demo: DEMO});
     });
   } else {
-    res.render('./index', {listId: reqId, socketAddress, demo: DEMO});
+    res.render('./index', {bracketId: reqId, socketAddress, demo: DEMO});
   }
 });
 

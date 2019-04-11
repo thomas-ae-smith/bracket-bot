@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// Constants for placeholder List data for seed files.
+// Constants for placeholder Bracket data for seed files.
 const LISTS = [
-  {title: 'Shopping List'},
-  {title: 'To Do List'},
-  {title: 'Party Planning List'},
+  {title: 'Custom Bracket'},
+  {title: 'Default Bracket'},
+  {title: 'Party Planning Bracket'},
 ];
 
 // Constants for placeholder User data for seed files.
@@ -21,33 +21,35 @@ const USERS = [
 ];
 
 /**
- * getUsersLists - Gets placeholder UsersLists data for seed files.
- * @param   {Array} listIds - Array of list IDs.
- * @returns {Array} usersLists - Array of placeholder usersLists data for seeds.
+ * getUsersBrackets - Gets placeholder UsersBrackets data for seed files.
+ * @param   {Array} bracketIds - Array of bracket IDs.
+ * @returns {Array} usersBrackets - Array of placeholder usersBrackets
+ *                                  data for seeds.
  */
-const getUsersLists = (listIds = []) => [
-  {list_id: listIds[0], user_fb_id: 1, owner: true},
-  {list_id: listIds[0], user_fb_id: 2},
-  {list_id: listIds[0], user_fb_id: 3},
-  {list_id: listIds[1], user_fb_id: 1},
-  {list_id: listIds[1], user_fb_id: 2, owner: true},
-  {list_id: listIds[2], user_fb_id: 2, owner: true},
-  {list_id: listIds[2], user_fb_id: 3},
+const getUsersBrackets = (bracketIds = []) => [
+  {bracket_id: bracketIds[0], user_fb_id: 1, owner: true},
+  {bracket_id: bracketIds[0], user_fb_id: 2},
+  {bracket_id: bracketIds[0], user_fb_id: 3},
+  {bracket_id: bracketIds[1], user_fb_id: 1},
+  {bracket_id: bracketIds[1], user_fb_id: 2, owner: true},
+  {bracket_id: bracketIds[2], user_fb_id: 2, owner: true},
+  {bracket_id: bracketIds[2], user_fb_id: 3},
 ];
 
 /**
- * getListsItems - Gets placeholder ListsItems data for seed files.
- * @param   {Array} listIds - Array of list IDs.
- * @returns {Array} listsItems - Array of placeholder listsItems data for seeds.
+ * getBracketsItems - Gets placeholder BracketsItems data for seed files.
+ * @param   {Array} bracketIds - Array of bracket IDs.
+ * @returns {Array} bracketsItems - Array of placeholder bracketsItems
+ *                                  data for seeds.
  */
-const getListsItems = (listIds = []) => [
-  {name: 'Cheese', list_id: listIds[0], owner_fb_id: 1, completer_fb_id: 2},
-  {name: 'Milk', list_id: listIds[0], owner_fb_id: 3, completer_fb_id: 3},
-  {name: 'Bread', list_id: listIds[0], owner_fb_id: 1},
-  {name: 'Pay Bills', list_id: listIds[1], owner_fb_id: 1, completer_fb_id: 2},
-  {name: 'Call Parents', list_id: listIds[1], owner_fb_id: 2},
-  {name: 'Balloons', list_id: listIds[2], owner_fb_id: 2},
-  {name: 'Invites', list_id: listIds[2], owner_fb_id: 3},
+const getBracketsItems = (bracketIds = []) => [
+  {name: 'Eggs', bracket_id: bracketIds[0], owner_fb_id: 1, completer_fb_id: 2},
+  {name: 'Milk', bracket_id: bracketIds[0], owner_fb_id: 3, completer_fb_id: 3},
+  {name: 'Bread', bracket_id: bracketIds[0], owner_fb_id: 1},
+  {name: 'Cup', bracket_id: bracketIds[1], owner_fb_id: 1, completer_fb_id: 2},
+  {name: 'Call Parents', bracket_id: bracketIds[1], owner_fb_id: 2},
+  {name: 'Balloons', bracket_id: bracketIds[2], owner_fb_id: 2},
+  {name: 'Invites', bracket_id: bracketIds[2], owner_fb_id: 3},
 ];
 
-module.exports = {getListsItems, getUsersLists, LISTS, USERS};
+module.exports = {getBracketsItems, getUsersBrackets, LISTS, USERS};

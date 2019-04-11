@@ -6,7 +6,7 @@
  */
 
 // ===== DB ====================================================================
-import Lists from '../models/lists';
+import Brackets from '../models/brackets';
 import Users from '../models/users';
 
 // ===== MESSENGER =============================================================
@@ -43,19 +43,20 @@ const getUserDetails = (senderId) => {
   });
 };
 
-const getFacebookProfileInfoForUsers = (users = [], listId, socketUsers) =>
+const getFacebookProfileInfoForUsers = (users = [], bracketId, socketUsers) =>
   Promise.all(users.map((user) => getUserDetails(user.fbId)))
     .then((res) => res.map((resUser = {}) => {
-      // Detect online status via socketUser with matching list & FB IDs.
+      // Detect online status via socketUser with matching bracket & FB IDs.
       const isOnline = [...socketUsers.values()].find((socketUser) =>
-        socketUser.listId === listId && socketUser.userId === resUser.fbId);
+        socketUser.bracketId === bracketId &&
+          socketUser.userId === resUser.fbId);
 
       return Object.assign({}, resUser, {online: !!isOnline || false});
     }));
 
-// Join Room, Update Necessary List Info, Notify All Users in room of changes.
+// Join Room, Update Necessary Bracket Info, Notify Users in room of changes.
 const join = ({
-  request: {senderId, listId},
+  request: {senderId, bracketId},
   allInRoom,
   sendStatus,
   socket,
@@ -63,41 +64,43 @@ const join = ({
   userSocket,
 }) => {
   Promise.all([
-    Lists.get(listId),
-    Lists.getAllItems(listId),
-    Lists.getOwner(listId),
+    Brackets.get(bracketId),
+    Brackets.getAllItems(bracketId),
+    Brackets.getOwner(bracketId),
     getUser(senderId),
-  ]).then(([list, items, listOwner, user]) => {
-    if (!list) {
-      console.error("List doesn't exist!");
-      sendStatus('noList');
+  ]).then(([bracket, items, bracketOwner, user]) => {
+    if (!bracket) {
+      console.error("Bracket doesn't exist!");
+      sendStatus('noBracket');
     }
 
-    Lists.addUser(list.id, user.fbId)
-      .then((usersList) => {
-        if (!listOwner) {
-          sendApi.sendListCreated(user.fbId, list.id, list.title);
-          allInRoom(list.id).emit('list:setOwnerId', usersList.userFbId);
+    Brackets.addUser(bracket.id, user.fbId)
+      .then((usersBracket) => {
+        if (!bracketOwner) {
+          sendApi.sendBracketCreated(user.fbId, bracket.id, bracket.title);
+          allInRoom(bracket.id).emit('bracket:setOwnerId',
+            usersBracket.userFbId);
         }
       })
       .then(() => {
-        socketUsers.set(socket.id, {listId: list.id, userId: user.fbId});
+        socketUsers.set(socket.id, {bracketId: bracket.id, userId: user.fbId});
 
-        Lists.getAllUsers(listId)
+        Brackets.getAllUsers(bracketId)
           .then((users) => {
-            return getFacebookProfileInfoForUsers(users, listId, socketUsers);
+            return getFacebookProfileInfoForUsers(users, bracketId,
+              socketUsers);
           })
           .then((fbUsers) => {
             const viewerUser =
               fbUsers.find((fbUser) => fbUser.fbId === user.fbId);
-            socket.join(list.id);
-            socket.in(list.id).emit('user:join', viewerUser);
+            socket.join(bracket.id);
+            socket.in(bracket.id).emit('user:join', viewerUser);
 
             userSocket.emit('init', {
-              ...list,
+              ...bracket,
               items,
               users: fbUsers,
-              ownerId: listOwner ? listOwner.fbId : user.fbId,
+              ownerId: bracketOwner ? bracketOwner.fbId : user.fbId,
             });
 
             sendStatus('ok');
@@ -107,7 +110,7 @@ const join = ({
 };
 
 // Notify users in room when user leaves.
-const leave = ({userId, listId, allInRoom, socket, socketUsers}) => {
+const leave = ({userId, bracketId, allInRoom, socket, socketUsers}) => {
   if (!userId) {
     console.error('User not registered to socket');
     return;
@@ -115,15 +118,15 @@ const leave = ({userId, listId, allInRoom, socket, socketUsers}) => {
 
   socketUsers.delete(socket.id);
 
-  // Detect online status via socketUser with matching list & FB IDs.
+  // Detect online status via socketUser with matching bracket & FB IDs.
   const onlineUsers =
     [...socketUsers.values()].reduce((onlineUsers, socketUser) => (
-      (socketUser.listId === listId)
+      (socketUser.bracketId === bracketId)
         ? [...onlineUsers, socketUser.userId]
         : onlineUsers
   ), []);
 
-  allInRoom(listId).emit('users:setOnline', onlineUsers);
+  allInRoom(bracketId).emit('users:setOnline', onlineUsers);
 };
 
 export default {join, leave};

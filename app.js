@@ -20,7 +20,7 @@ import ThreadSetup from './messenger-api-helpers/thread-setup';
 
 // ===== ROUTES ================================================================
 import index from './routes/index';
-import lists from './routes/lists';
+import brackets from './routes/brackets';
 import webhooks from './routes/webhooks';
 
 // ===== SOCKETS ===============================================================
@@ -85,7 +85,7 @@ app.use(function(req, res, next) {
 /* ----------  Primary / Happy Path  ---------- */
 
 app.use('/', index);
-app.use('/lists', lists);
+app.use('/brackets', brackets);
 app.use('/webhook', webhooks);
 
 /* ----------  Errors  ---------- */

@@ -73,61 +73,61 @@ const sendWelcomeMessage = (recipientId) => {
   sendMessage(recipientId, messages.welcomeMessage(APP_URL));
 };
 
-// Let the user know that they don't have any lists yet.
-const sendNoListsYet = (recipientId) => {
-  sendMessage(recipientId, messages.noListsMessage(APP_URL));
+// Let the user know that they don't have any brackets yet.
+const sendNoBracketsYet = (recipientId) => {
+  sendMessage(recipientId, messages.noBracketsMessage(APP_URL));
 };
 
-// Show user the lists they are associated with.
-const sendLists = (recipientId, action, lists, offset) => {
-  // Show different responses based on number of lists.
-  switch (lists.length) {
+// Show user the brackets they are associated with.
+const sendBrackets = (recipientId, action, brackets, offset) => {
+  // Show different responses based on number of brackets.
+  switch (brackets.length) {
   case 0:
-    // Tell User they have no lists.
-    sendNoListsYet(recipientId);
+    // Tell User they have no brackets.
+    sendNoBracketsYet(recipientId);
     break;
   case 1:
-    // Show a single list — List view templates require
+    // Show a single bracket — Bracket view templates require
     // a minimum of 2 Elements. Rease More at:
     // https://developers.facebook.com/docs/
-    // messenger-platform/send-api-reference/list-template
-    const {id, title} = lists[0];
+    // messenger-platform/send-api-reference/bracket-template
+    const {id, title} = brackets[0];
 
     sendMessage(
       recipientId,
-      messages.shareListMessage(APP_URL, id, title, 'Open List'),
+      messages.shareBracketMessage(APP_URL, id, title, 'Open Bracket'),
     );
 
     break;
   default:
-    // Show a paginated set of lists — List view templates require
+    // Show a paginated set of brackets — Bracket view templates require
     // a maximum of 4 Elements. Rease More at:
     // https://developers.facebook.com/docs/
-    // messenger-platform/send-api-reference/list-template
+    // messenger-platform/send-api-reference/bracket-template
     sendMessage(
       recipientId,
-      messages.paginatedListsMessage(APP_URL, action, lists, offset)
+      messages.paginatedBracketsMessage(APP_URL, action, brackets, offset)
     );
 
     break;
   }
 };
 
-// Send a message notifying the user their list has been created.
-const sendListCreated = (recipientId, listId, title) => {
+// Send a message notifying the user their bracket has been created.
+const sendBracketCreated = (recipientId, bracketId, title) => {
   sendMessage(
     recipientId,
     [
-      messages.listCreatedMessage,
-      messages.shareListMessage(APP_URL, listId, title, 'Open List'),
+      messages.bracketCreatedMessage,
+      messages.shareBracketMessage(APP_URL, bracketId, title, 'Open Bracket'),
     ]);
 };
 
 export default {
-  sendListCreated,
-  sendLists,
+  sendBracketCreated,
+  sendBrackets,
   sendMessage,
-  sendNoListsYet,
+  sendNoBracketsYet,
   sendReadReceipt,
   sendWelcomeMessage,
 };

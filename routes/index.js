@@ -14,7 +14,7 @@ const router = express.Router();
 router.get('/', (_, res) => {
   res.render('./index', {
     demo: process.env.DEMO,
-    listId: null,
+    bracketId: null,
   });
 });
 
