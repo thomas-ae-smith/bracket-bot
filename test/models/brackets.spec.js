@@ -262,8 +262,8 @@ describe('Bracket', () => {
           expect(usersBracket.owner).to.equal(true);
 
           knex('users_brackets')
-            .where({bracket_id: 1, // eslint-disable-line camelcase
-              user_fb_id: 1}) // eslint-disable-line camelcase
+            // eslint-disable-next-line camelcase
+            .where({bracket_id: 1, user_fb_id: 1})
             .first()
             .then((usersBracket) => {
               expect(usersBracket.owner).to.equal(false);

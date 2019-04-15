@@ -12,33 +12,39 @@ exports.up = (knex, Promise) => {
       table.string('title').defaultTo('Custom Bracket').notNullable();
     }),
 
-    knex.schema.createTable('brackets_members', (table) => {
-      table.increments();
-      table.string('name').notNullable();
-      table.integer('bracket_id').references('brackets.id').notNullable();
-      table.bigInteger('owner_fb_id').references('users.fb_id').notNullable();
-      table.bigInteger('completer_fb_id').references('users.fb_id');
-    }),
-
     knex.schema.createTable('users', (table) => {
       table.increments();
       table.bigInteger('fb_id').unique().notNullable();
     }),
 
-    knex.schema.createTable('users_brackets', (table) => {
+    knex.schema.createTable('pairings', (table) => {
       table.increments();
       table.integer('bracket_id').references('brackets.id').notNullable();
+      table.integer('pairing_id').references('pairings.id');
+    }),
+
+    knex.schema.createTable('members', (table) => {
+      table.increments();
+      table.string('name').notNullable();
+      table.integer('bracket_id').references('brackets.id').notNullable();
+      table.integer('pairing_id').references('pairings.id').notNullable();
+    }),
+
+    knex.schema.createTable('votes', (table) => {
+      table.primary(['pairing_id', 'user_fb_id']);
+      table.integer('pairing_id').references('pairings.id').notNullable();
       table.bigInteger('user_fb_id').references('users.fb_id').notNullable();
-      table.boolean('owner').defaultTo(false).notNullable();
+      table.integer('member_id').references('members.id').notNullable();
     }),
   ]);
 };
 
 exports.down = (knex, Promise) => {
   return Promise.all([
-    knex.schema.dropTable('users_brackets'),
-    knex.schema.dropTable('brackets_members'),
-    knex.schema.dropTable('users'),
+    knex.schema.dropTable('votes'),
+    knex.schema.dropTable('members'),
+    knex.schema.dropTable('pairings'),
     knex.schema.dropTable('brackets'),
+    knex.schema.dropTable('users'),
   ]);
 };
