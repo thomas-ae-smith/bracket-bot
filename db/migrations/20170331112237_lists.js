@@ -20,19 +20,19 @@ exports.up = (knex, Promise) => {
     knex.schema.createTable('pairings', (table) => {
       table.increments();
       table.integer('bracket_id').references('brackets.id').notNullable();
-      table.integer('pairing_id').references('pairings.id');
+      table.integer('next_pairing_id').references('pairings.id');
     }),
 
     knex.schema.createTable('members', (table) => {
       table.increments();
       table.string('name').notNullable();
       table.integer('bracket_id').references('brackets.id').notNullable();
-      table.integer('pairing_id').references('pairings.id').notNullable();
+      table.integer('first_pairing_id').references('pairings.id').notNullable();
     }),
 
     knex.schema.createTable('votes', (table) => {
-      table.primary(['pairing_id', 'user_fb_id']);
-      table.integer('pairing_id').references('pairings.id').notNullable();
+      table.primary(['vote_pairing_id', 'user_fb_id']);
+      table.integer('vote_pairing_id').references('pairings.id').notNullable();
       table.bigInteger('user_fb_id').references('users.fb_id').notNullable();
       table.integer('member_id').references('members.id').notNullable();
     }),

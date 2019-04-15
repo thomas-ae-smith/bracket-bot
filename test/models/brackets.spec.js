@@ -6,10 +6,10 @@ import Brackets from '../../models/brackets';
 
 // Test comparator values are created in `test/sample-seeds` file.
 const DEFAULT_TITLE = 'Custom Bracket';
-const BRACKET_1_TITLE = DEFAULT_TITLE;
-const BRACKET_2_TITLE = 'Default Bracket';
+const BRACKET_1_TITLE = 'Colour Bracket';
+const BRACKET_2_TITLE = 'Number Bracket';
 const USER_1_FB_ID = '1';
-const USER_2_FB_ID = '2';
+// const USER_2_FB_ID = '2';
 
 describe('Bracket', () => {
   beforeEach((done) => {
@@ -23,34 +23,34 @@ describe('Bracket', () => {
     knex.migrate.rollback().then(() => done());
   });
 
-  describe('addUser', () => {
-    it('adds a new User to the Bracket', (done) => {
-      Brackets.getAllUsers(3)
-        .then((users) => {
-          expect(users).to.have.length(2);
-          expect(users[0].fbId).to.not.equal('1');
+  // describe('addUser', () => {
+  //   it('adds a new User to the Bracket', (done) => {
+  //     Brackets.getAllUsers(3)
+  //       .then((users) => {
+  //         expect(users).to.have.length(2);
+  //         expect(users[0].fbId).to.not.equal('1');
 
-          return Brackets.addUser(3, 1);
-        })
-        .then((usersBracket) => {
-          expect(usersBracket).to.have.property('owner');
-          expect(usersBracket).to.have.property('bracketId');
-          expect(usersBracket.bracketId).to.equal(3);
-          expect(usersBracket.owner).to.equal(false);
+  //         return Brackets.addUser(3, 1);
+  //       })
+  //       .then((usersBracket) => {
+  //         expect(usersBracket).to.have.property('owner');
+  //         expect(usersBracket).to.have.property('bracketId');
+  //         expect(usersBracket.bracketId).to.equal(3);
+  //         expect(usersBracket.owner).to.equal(false);
 
-          return Brackets.getAllUsers(3);
-        })
-        .then((users) => {
-          expect(users).to.have.length(3);
+  //         return Brackets.getAllUsers(3);
+  //       })
+  //       .then((users) => {
+  //         expect(users).to.have.length(3);
 
-          const newUser = users.find((user) => user.fbId === '1');
+  //         const newUser = users.find((user) => user.fbId === '1');
 
-          expect(newUser).to.exist;
-          expect(newUser).to.be.an('object');
-          done();
-        });
-    });
-  });
+  //         expect(newUser).to.exist;
+  //         expect(newUser).to.be.an('object');
+  //         done();
+  //       });
+  //   });
+  // });
 
   describe('create', () => {
     it('creates a new Bracket with the given title', (done) => {
@@ -81,7 +81,7 @@ describe('Bracket', () => {
         .then((bracket) => {
           expect(bracket).to.be.an('object');
           expect(bracket).to.have.property('title');
-          expect(bracket.title).to.equal(BRACKET_1_TITLE);
+          expect(bracket.title).to.equal(DEFAULT_TITLE);
           done();
         });
     });
@@ -109,14 +109,13 @@ describe('Bracket', () => {
 
   describe('getAllMembers', () => {
     it('returns an Array of all Members for a Bracket', (done) => {
-      Brackets.getAllMembers(1)
+      Brackets.getAllMembers(2)
         .then((members) => {
-          expect(members).to.have.lengthOf(3);
+          expect(members).to.have.lengthOf(5);
           expect(members[0]).to.be.an('object');
           expect(members[0]).to.have.property('name');
           expect(members[0]).to.have.property('bracketId');
-          expect(members[0]).to.have.property('ownerFbId');
-          expect(members[0]).to.have.property('completerFbId');
+          expect(members[0]).to.have.property('firstPairingId');
           done();
         });
     });
@@ -131,73 +130,74 @@ describe('Bracket', () => {
     });
   });
 
-  describe('getAllUsers', () => {
-    it('returns an Array of all Users of a Bracket', (done) => {
-      Brackets.getAllUsers(1)
-        .then((users) => {
-          expect(users).to.have.lengthOf(3);
-          expect(users[0]).to.be.an('object');
-          expect(users[0]).to.have.property('fbId');
-          done();
-        });
-    });
+  // describe('getAllUsers', () => {
+  //   it('returns an Array of all Users of a Bracket', (done) => {
+  //     Brackets.getAllUsers(1)
+  //       .then((users) => {
+  //         expect(users).to.have.lengthOf(3);
+  //         expect(users[0]).to.be.an('object');
+  //         expect(users[0]).to.have.property('fbId');
+  //         done();
+  //       });
+  //   });
 
-    it('returns an empty Array when there are no Users/Bracket', (done) => {
-      Brackets.getAllUsers(1)
-        .then((users) => {
-          expect(users).to.have.lengthOf(3);
-          expect(users[0]).to.be.an('object');
-          expect(users[0]).to.have.property('fbId');
-          done();
-        });
-    });
-  });
+  //   it('returns an empty Array when there are no Users/Bracket', (done) => {
+  //     Brackets.getAllUsers(1)
+  //       .then((users) => {
+  //         expect(users).to.have.lengthOf(3);
+  //         expect(users[0]).to.be.an('object');
+  //         expect(users[0]).to.have.property('fbId');
+  //         done();
+  //       });
+  //   });
+  // });
 
   describe('getForUser', () => {
-    it("returns a User's owned Brackets", (done) => {
-      Brackets.getForUser(1)
+    it("returns a User's started/finished Brackets", (done) => {
+      Brackets.getForUser(USER_1_FB_ID)
         .then((brackets) => {
           expect(brackets).to.be.an('array');
           expect(brackets).to.have.length(2);
           expect(brackets[0]).to.have.property('id');
           expect(brackets[0]).to.have.property('title');
-          expect(brackets[0].id).to.equal(1);
+          expect(brackets[0].id).to.equal(2);
           expect(brackets[0].title).to.equal(BRACKET_1_TITLE);
           done();
         });
     });
   });
 
-  describe('getOwnedForUser', () => {
-    it("returns a User's owned Brackets", (done) => {
-      Brackets.getOwnedForUser(1)
-        .then((brackets) => {
-          expect(brackets).to.be.an('array');
-          expect(brackets).to.have.length(1);
-          expect(brackets[0]).to.have.property('id');
-          expect(brackets[0]).to.have.property('title');
-          expect(brackets[0].id).to.equal(1);
-          expect(brackets[0].title).to.equal(BRACKET_1_TITLE);
-          done();
-        });
-    });
-  });
-
-  describe('getSharedToUser', () => {
-    it("returns a User's shared, unowned Brackets", (done) => {
-      Brackets.getSharedToUser(1)
+  describe('getCompletedByUser', () => {
+    it("returns a User's completed Brackets", (done) => {
+      Brackets.getCompletedByUser(USER_1_FB_ID)
         .then((brackets) => {
           expect(brackets).to.be.an('array');
           expect(brackets).to.have.length(1);
           expect(brackets[0]).to.have.property('id');
           expect(brackets[0]).to.have.property('title');
           expect(brackets[0].id).to.equal(2);
+          expect(brackets[0].title).to.equal(BRACKET_1_TITLE);
+          done();
+        });
+    });
+  });
+
+  describe('getUncompletedByUser', () => {
+    it("returns a User's started, uncompleted Brackets", (done) => {
+      Brackets.getUncompletedByUser(USER_1_FB_ID)
+        .then((brackets) => {
+          expect(brackets).to.be.an('array');
+          expect(brackets).to.have.length(1);
+          expect(brackets[0]).to.have.property('id');
+          expect(brackets[0]).to.have.property('title');
+          expect(brackets[0].id).to.equal(3);
           expect(brackets[0].title).to.equal(BRACKET_2_TITLE);
           done();
         });
     });
   });
 
+/*
   describe('getWithUsers', () => {
     it('returns a bracket with an array of subscriberIds', (done) => {
       Brackets.getWithUsers(1)
@@ -272,6 +272,7 @@ describe('Bracket', () => {
         });
     });
   });
+*/
 
   describe('setTitle', () => {
     it('updates the title of a given Bracket', (done) => {

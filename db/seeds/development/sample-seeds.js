@@ -19,11 +19,19 @@ const {getUpperPairings, getMiddlePairings, getBasePairing,
  */
 exports.seed = (knex, Promise) =>
   Promise.all([
-    knex('votes').del(),
-    knex('members').del(),
-    knex('pairings').del(),
-    knex('users').del(),
-    knex('brackets').del(),
+    knex('votes').del()
+    .then(() => {
+      return knex('members').del()
+      .then(() => {
+        return knex('pairings').del()
+        .then(() => {
+          return knex('users').del()
+          .then(() => {
+            return knex('brackets').del();
+          });
+        });
+      });
+    }),
   ]).then(() =>
     Promise.all([
       knex('brackets').insert(BRACKETS, 'id'),
@@ -31,41 +39,38 @@ exports.seed = (knex, Promise) =>
     ]).then((ids) => {
       const bracketIds = ids[0];
 
-      return Promise.all([
-        knex('pairings').insert(getUpperPairings(bracketIds), 'id'),
-      ]).then((ids) => {
-        const upperPairingIds = ids[0];
+      return knex('pairings').insert(getUpperPairings(bracketIds), 'id')
+      .then((ids) => {
+        const upperPairingIds = ids;
 
-        return Promise.all([
-          knex('pairings').insert(getMiddlePairings(bracketIds,
-            upperPairingIds), 'id'),
-        ]).then((ids) => {
-          const middlePairingIds = ids[0];
+        return knex('pairings').insert(getMiddlePairings(bracketIds,
+          upperPairingIds), 'id')
+          .then((ids) => {
+            const middlePairingIds = ids;
 
-          return Promise.all([
-            knex('pairings').insert(getBasePairing(bracketIds,
-              middlePairingIds), 'id'),
-            knex('pairings').pluck('id'), // is there a race condition here?
-          ]).then((ids) => {
-            const pairingIds = ids[1];
+            return knex('pairings').insert(getBasePairing(bracketIds,
+              middlePairingIds), 'id')
+              .then(() => {
+                return knex('pairings').pluck('id')
+                .then((ids) => {
+                  const pairingIds = ids;
 
-            return Promise.all([
-              knex('members').insert(getMembers(bracketIds, pairingIds), 'id'),
-            ]).then((ids) => {
-              const memberIds = ids[0];
-console.log(pairingIds);
-console.log(memberIds);
-              return Promise.all([
-                knex('votes').insert(getVotes(pairingIds, memberIds)),
-              ]);
-            });
+                  return knex('members')
+                  .insert(getMembers(bracketIds, pairingIds), 'id')
+                  .then((ids) => {
+                    const memberIds = ids;
+
+                    return knex('votes')
+                    .insert(getVotes(pairingIds, memberIds));
+                  });
+                });
+              });
           });
-        });
       });
     })
   );
 
-  /* There are better ways of doing the above than hardcoding it
+  /* There are better ways of doing the above three tiers than hardcoding it
    * ( https://github.com/tgriesser/knex/issues/556
    *   https://stackoverflow.com/questions/40543668/batch-update-in-knex )
    * but since this is only seeding code it's not worth the hassle.

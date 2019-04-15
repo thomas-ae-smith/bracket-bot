@@ -13,9 +13,7 @@ import Knex  from '../db/knex';
 import {camelCaseKeys} from './util';
 
 const Brackets = () => Knex('brackets');
-const BracketsMembers = () => Knex('brackets_members');
-const Users = () => Knex('users');
-const UsersBrackets = () => Knex('users_brackets');
+const Members = () => Knex('members');
 
 /**
  * get - Gets the Bracket with the given ID.
@@ -37,148 +35,70 @@ const getAll = () =>
     .then((brackets) => brackets.map(camelCaseKeys));
 
 /**
- * getAllMembers - Gets all BracketsMembers for the Bracket with the given ID.
- * @param   {Number} bracketId - The ID of the Bracket to get items for.
- * @returns {Array} bracketsMembers - Array of all BracketsMembers
+ * getAllMembers - Gets all Members of the Bracket with the given ID.
+ * @param   {Number} bracketId - The ID of the Bracket to get members of.
+ * @returns {Array} members - Array of all Members
  */
 const getAllMembers = (bracketId) =>
-  BracketsMembers()
+  Members()
     .where('bracket_id', parseInt(bracketId, 10))
     .select()
-    .then((bracketsMembers) => bracketsMembers.map(camelCaseKeys));
-
-/**
- * getAllUsers - Gets all Users of the Bracket with the given ID.
- * @param   {Number} bracketId - The ID of the Bracket to get Users for.
- * @returns {Array} users - Array of all Users for the matched Bracket.
- */
-const getAllUsers = (bracketId) =>
-  Users()
-    .join('users_brackets', 'fb_id', 'users_brackets.user_fb_id')
-    .where('bracket_id', parseInt(bracketId, 10))
-    .select('fb_id')
-    .then((users) => users.map(camelCaseKeys));
-
-/**
- * getOwner - Gets the User who owns the Bracket with the given ID.
- * @param   {Number} bracketId - The ID of the Bracket to get the Owner of.
- * @returns {Object} user - The User who owns the bracket.
- */
-const getOwner = (bracketId) =>
-  Users()
-    .join('users_brackets', 'fb_id', 'users_brackets.user_fb_id')
-    .where({bracket_id: parseInt(bracketId, 10), owner: true})
-    .first('fb_id')
-    .then(camelCaseKeys);
-
-/**
- * getWithUsers - Returns the Bracket with the given ID, with an array of
- *                subscribed user FB IDs provided under `subscriberIds` key.
- * @param   {Number} bracketId - The ID of the Bracket to return.
- * @returns {Object} bracket - The matched bracket, with `subscriberIds` key.
- */
-const getWithUsers = (bracketId) =>
-  Promise.all([get(bracketId), getAllUsers(bracketId)])
-    .then(([bracket, users]) => {
-      if (bracket) {
-        bracket.subscriberIds = users.map((user = {}) => user.fbId);
-      }
-
-      return bracket;
-    });
+    .then((members) => members.map(camelCaseKeys));
 
 /**
  * getForUser - Returns all Brackets associated with the given FB ID
  *              and ownership value.
  * @param   {Number} userFbId - The FB ID of the User to find Brackets for.
- * @param   {Boolean} owner - The Ownership state to match Brackets against.
+ * @param   {Boolean} completed - The completion state to match Brackets with.
  * @returns {Array} brackets - The matched brackets.
  */
-const getForUser = (userFbId, owner) => {
+const getForUser = (userFbId, completed) => {
   const query = Brackets()
-    .join('users_brackets', 'brackets.id', 'users_brackets.bracket_id')
+    .join('pairings', 'brackets.id', 'pairings.bracket_id')
+    .join('votes', 'pairings.id', 'votes.vote_pairing_id')
     .where('user_fb_id', userFbId);
 
-  if (typeof owner !== 'undefined') {
-    query.andWhere({owner});
+  // If we are looking for completed brackets, return only
+  // those containing a vote for a terminal pairing
+  if (completed === true) {
+    query.andWhere('pairings.next_pairing_id', null);
   }
 
-  return query.pluck('brackets.id')
-    .then((bracketIds = []) => Promise.all(bracketIds.map(getWithUsers)));
-};
+  return query.distinct().pluck('brackets.id')
+    .then((bracketIds = []) => {
+      // If we are looking for uncompleted brackets, rerun
+      // the modified query to find completed brackets,
+      // and filter those out
+      if (completed === false) {
+        query.andWhere('pairings.next_pairing_id', null);
 
-/**
- * getOwnedForUser — Returns all Brackets that a User owns.
- * @param   {Number} userFbId - The FB ID of the User to find Brackets for.
- * @returns {Array} brackets - Array of all brackets owned by the User.
- */
-const getOwnedForUser = (userFbId) => getForUser(userFbId, true);
-
-/**
- * getSharedToUser — Returns all Brackets that have been shared with a User.
- * @param   {Number} userFbId - The FB ID of the User to find Brackets for.
- * @returns {Array} brackets - Array of all Brackets shared with the User.
- */
-const getSharedToUser = (userFbId) => getForUser(userFbId, false);
-
-/**
- * addUser - Associates a User with a Bracket, making
- *           them the owner if no other owner is found.
- * @param   {Number} bracketId - The ID of the Bracket to subscribe a User to.
- * @param   {Number} userFbId - The FB ID of the User to add to a Bracket.
- * @returns {Object} usersBracket
- */
-const addUser = (bracketId, userFbId) => {
-  return getOwner(bracketId)
-    .then((user) => !!user)
-    .then((hasOwner) =>
-      UsersBrackets()
-        .where({bracket_id: bracketId, user_fb_id: userFbId})
-        .first()
-        .then((usersBracket) => ({hasOwner, alreadyAdded: !!usersBracket}))
-    )
-    .then(({hasOwner, alreadyAdded}) => {
-      if (alreadyAdded && !hasOwner) {
-        return UsersBrackets()
-          .where({bracket_id: bracketId, user_fb_id: userFbId})
-          .first()
-          .update({owner: true}, ['id', 'bracket_id', 'user_fb_id', 'owner'])
-          .then(([usersBracket]) => camelCaseKeys(usersBracket));
-      } else if (alreadyAdded) {
-        return UsersBrackets()
-          .where({bracket_id: bracketId, user_fb_id: userFbId})
-          .first()
-          .then(camelCaseKeys);
+        return query.distinct().pluck('brackets.id')
+        .then((completedIds = []) => {
+          const uncompletedIds = bracketIds.filter(
+            (id) => !(completedIds.includes(id)) );
+          // Return early.
+          return Promise.all(uncompletedIds.map(get));
+        });
       }
-
-      return UsersBrackets()
-        .insert(
-          {owner: !hasOwner, bracket_id: bracketId, user_fb_id: userFbId},
-          ['id', 'bracket_id', 'user_fb_id', 'owner']
-        )
-        .then(([usersBracket]) => camelCaseKeys(usersBracket));
+      // otherwise return all matching brackets
+      return Promise.all(bracketIds.map(get));
     });
 };
 
 /**
- * setOwner - Make the User with the provided FB ID
- *            the owner of the Bracket with the given ID.
- * @param   {Number} bracketId - The ID of the Bracket to make User owner of.
- * @param   {Number} userFbId - The FB ID of the User to be made owner.
- * @returns {Object} usersBracket
+ * getCompletedByUser — Returns all Brackets that a User has completed.
+ * @param   {Number} userFbId - The FB ID of the User to find Brackets for.
+ * @returns {Array} brackets - Array of all brackets completed by the User.
  */
-const setOwner = (bracketId, userFbId) =>
-  getOwner(bracketId)
-    .then((user) => {
-      if (!!user) {
-        return UsersBrackets()
-          .where({bracket_id: bracketId, user_fb_id: user.fbId})
-          .update({owner: false}, 'id')
-          .then(() => addUser(bracketId, userFbId));
-      }
+const getCompletedByUser = (userFbId) => getForUser(userFbId, true);
 
-      return addUser(bracketId, userFbId);
-    });
+/**
+ * getUncompletedByUser — Returns all Brackets that have been started by a User.
+ * @param   {Number} userFbId - The FB ID of the User to find Brackets for.
+ * @returns {Array} brackets - Array of all Brackets started but not
+ *                             finished by the User.
+ */
+const getUncompletedByUser = (userFbId) => getForUser(userFbId, false);
 
 /**
  * setTitle - Sets the title of a given bracket.
@@ -204,17 +124,12 @@ const create = (title = 'Custom Bracket') =>
     .insert({title}, 'id').then(get);
 
 export default {
-  addUser,
   create,
   get,
   getAll,
   getAllMembers,
-  getAllUsers,
   getForUser,
-  getOwnedForUser,
-  getSharedToUser,
-  getOwner,
-  getWithUsers,
-  setOwner,
+  getCompletedByUser,
+  getUncompletedByUser,
   setTitle,
 };

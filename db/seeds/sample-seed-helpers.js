@@ -27,30 +27,30 @@ const getUpperPairings = (bracketIds = []) => [
 
 // Constants for placeholder Pairing data for seed files.
 const getMiddlePairings = (bracketIds = [], pairingIds = []) => [
-  {bracket_id: bracketIds[1], pairing_id: pairingIds[0]},
-  {bracket_id: bracketIds[1], pairing_id: pairingIds[0]},
-  {bracket_id: bracketIds[2], pairing_id: pairingIds[1]},
-  {bracket_id: bracketIds[2], pairing_id: pairingIds[1]},
+  {bracket_id: bracketIds[1], next_pairing_id: pairingIds[0]},
+  {bracket_id: bracketIds[1], next_pairing_id: pairingIds[0]},
+  {bracket_id: bracketIds[2], next_pairing_id: pairingIds[1]},
+  {bracket_id: bracketIds[2], next_pairing_id: pairingIds[1]},
 ];
 
 // Constants for placeholder Pairing data for seed files.
 const getBasePairing = (bracketIds = [], pairingIds = []) => [
-  {bracket_id: bracketIds[1], pairing_id: pairingIds[1]},
+  {bracket_id: bracketIds[1], next_pairing_id: pairingIds[1]},
 ];
 
 // todo: figure out how to set pairings internal relations
 
 // Constants for placeholder Member data for seed files.
 const getMembers = (bracketIds = [], pairingIds = []) => [
-  {name: 'White', bracket_id: bracketIds[1], pairing_id: pairingIds[6]},
-  {name: 'Blue', bracket_id: bracketIds[1], pairing_id: pairingIds[2]},
-  {name: 'Black', bracket_id: bracketIds[1], pairing_id: pairingIds[6]},
-  {name: 'Red', bracket_id: bracketIds[1], pairing_id: pairingIds[2]},
-  {name: 'Green', bracket_id: bracketIds[1], pairing_id: pairingIds[3]},
-  {name: 'One', bracket_id: bracketIds[2], pairing_id: pairingIds[4]},
-  {name: 'Two', bracket_id: bracketIds[2], pairing_id: pairingIds[5]},
-  {name: 'Three', bracket_id: bracketIds[2], pairing_id: pairingIds[5]},
-  {name: 'Four', bracket_id: bracketIds[2], pairing_id: pairingIds[4]},
+  {name: 'White', bracket_id: bracketIds[1], first_pairing_id: pairingIds[6]},
+  {name: 'Blue', bracket_id: bracketIds[1], first_pairing_id: pairingIds[2]},
+  {name: 'Black', bracket_id: bracketIds[1], first_pairing_id: pairingIds[6]},
+  {name: 'Red', bracket_id: bracketIds[1], first_pairing_id: pairingIds[2]},
+  {name: 'Green', bracket_id: bracketIds[1], first_pairing_id: pairingIds[3]},
+  {name: 'One', bracket_id: bracketIds[2], first_pairing_id: pairingIds[4]},
+  {name: 'Two', bracket_id: bracketIds[2], first_pairing_id: pairingIds[5]},
+  {name: 'Three', bracket_id: bracketIds[2], first_pairing_id: pairingIds[5]},
+  {name: 'Four', bracket_id: bracketIds[2], first_pairing_id: pairingIds[4]},
 ];
 
 /**
@@ -61,27 +61,28 @@ const getMembers = (bracketIds = [], pairingIds = []) => [
  *                                  data for seeds.
  */
 const getVotes = (pairingIds = [], memberIds = []) => [
-  {pairing_id: pairingIds[0], member_id: memberIds[3], user_fb_id: 1},
-  {pairing_id: pairingIds[1], member_id: memberIds[7], user_fb_id: 1},
-  {pairing_id: pairingIds[2], member_id: memberIds[3], user_fb_id: 1},
-  {pairing_id: pairingIds[3], member_id: memberIds[0], user_fb_id: 1},
-  {pairing_id: pairingIds[4], member_id: memberIds[5], user_fb_id: 1},
-  {pairing_id: pairingIds[5], member_id: memberIds[7], user_fb_id: 1},
-  {pairing_id: pairingIds[6], member_id: memberIds[0], user_fb_id: 1},
-  {pairing_id: pairingIds[0], member_id: memberIds[4], user_fb_id: 2},
-  {pairing_id: pairingIds[1], member_id: memberIds[8], user_fb_id: 2},
-  {pairing_id: pairingIds[2], member_id: memberIds[1], user_fb_id: 2},
-  {pairing_id: pairingIds[3], member_id: memberIds[2], user_fb_id: 2},
-  {pairing_id: pairingIds[4], member_id: memberIds[8], user_fb_id: 2},
-  {pairing_id: pairingIds[5], member_id: memberIds[7], user_fb_id: 2},
-  {pairing_id: pairingIds[6], member_id: memberIds[2], user_fb_id: 2},
-  {pairing_id: pairingIds[0], member_id: memberIds[2], user_fb_id: 3},
-  {pairing_id: pairingIds[1], member_id: memberIds[5], user_fb_id: 3},
-  {pairing_id: pairingIds[2], member_id: memberIds[1], user_fb_id: 3},
-  {pairing_id: pairingIds[3], member_id: memberIds[2], user_fb_id: 3},
-  {pairing_id: pairingIds[4], member_id: memberIds[5], user_fb_id: 3},
-  {pairing_id: pairingIds[5], member_id: memberIds[6], user_fb_id: 3},
-  {pairing_id: pairingIds[6], member_id: memberIds[2], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[0], member_id: memberIds[3], user_fb_id: 1},
+  // User 1 has not completed bracket 2
+  // {vote_pairing_id: pairingIds[1], member_id: memberIds[7], user_fb_id: 1},
+  {vote_pairing_id: pairingIds[2], member_id: memberIds[3], user_fb_id: 1},
+  {vote_pairing_id: pairingIds[3], member_id: memberIds[0], user_fb_id: 1},
+  {vote_pairing_id: pairingIds[4], member_id: memberIds[5], user_fb_id: 1},
+  {vote_pairing_id: pairingIds[5], member_id: memberIds[7], user_fb_id: 1},
+  {vote_pairing_id: pairingIds[6], member_id: memberIds[0], user_fb_id: 1},
+  {vote_pairing_id: pairingIds[0], member_id: memberIds[4], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[1], member_id: memberIds[8], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[2], member_id: memberIds[1], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[3], member_id: memberIds[2], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[4], member_id: memberIds[8], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[5], member_id: memberIds[7], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[6], member_id: memberIds[2], user_fb_id: 2},
+  {vote_pairing_id: pairingIds[0], member_id: memberIds[2], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[1], member_id: memberIds[5], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[2], member_id: memberIds[1], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[3], member_id: memberIds[2], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[4], member_id: memberIds[5], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[5], member_id: memberIds[6], user_fb_id: 3},
+  {vote_pairing_id: pairingIds[6], member_id: memberIds[2], user_fb_id: 3},
 ];
 
 module.exports = {getUpperPairings, getMiddlePairings, getBasePairing,
